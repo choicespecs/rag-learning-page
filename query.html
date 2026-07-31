@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Query — RAG_LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="brand" href="index.html">RAG_LAB</a>
+  <ul class="nav-links">
+    <li><a href="chunking.html">Chunking</a></li>
+    <li><a href="embedding.html">Embedding</a></li>
+    <li><a href="vectordb.html">Vector DB</a></li>
+    <li><a href="query.html" class="active">Query</a></li>
+  </ul>
+</nav>
+
+<main class="page-main">
+  <h1>04 · Querying</h1>
+
+  <div class="stage-layout">
+    <div class="panel explanation-panel">
+      <button class="panel-title collapsible" id="explanation-toggle" aria-expanded="true">
+        <span class="toggle-indicator" id="toggle-indicator">[-]</span>What Is Retrieval?
+      </button>
+      <div class="explanation-body" id="explanation-body">
+        <div class="explanation-general" id="explanation-general"></div>
+        <p class="explanation-reactive" id="explanation-reactive"></p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Your Query</div>
+      <textarea id="query-input" rows="2"></textarea>
+
+      <div class="panel-title" style="margin-top: 24px;">Similarity Plot</div>
+      <canvas class="plot" id="plot" width="600" height="320"></canvas>
+
+      <div class="panel-title" style="margin-top: 24px;">Ranked Results</div>
+      <ul class="entry-list" id="results-list"></ul>
+    </div>
+  </div>
+</main>
+
+<script src="ragmath.js"></script>
+<script src="query.js"></script>
+</body>
+</html>

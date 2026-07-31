@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Embedding — RAG_LAB</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="brand" href="index.html">RAG_LAB</a>
+  <ul class="nav-links">
+    <li><a href="chunking.html">Chunking</a></li>
+    <li><a href="embedding.html" class="active">Embedding</a></li>
+    <li><a href="vectordb.html">Vector DB</a></li>
+    <li><a href="query.html">Query</a></li>
+  </ul>
+</nav>
+
+<main class="page-main">
+  <h1>02 · Embedding</h1>
+
+  <div class="stage-layout">
+    <div class="panel explanation-panel">
+      <button class="panel-title collapsible" id="explanation-toggle" aria-expanded="true">
+        <span class="toggle-indicator" id="toggle-indicator">[-]</span>What Is An Embedding?
+      </button>
+      <div class="explanation-body" id="explanation-body">
+        <div class="explanation-general" id="explanation-general"></div>
+        <p class="explanation-reactive" id="explanation-reactive"></p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title">Text To Embed</div>
+      <textarea id="input-text" rows="3"></textarea>
+
+      <div class="panel-title" style="margin-top: 24px;">Preprocessing (Tokenize &amp; Filter)</div>
+      <div class="token-list" id="token-list"></div>
+      <p class="summary-line" id="token-summary"></p>
+
+      <div class="panel-title" style="margin-top: 24px;">Vector Plot</div>
+      <canvas class="plot" id="plot" width="600" height="320"></canvas>
+      <p class="summary-line" id="coord-readout"></p>
+
+      <div id="bar-readout" style="margin-top: 16px;"></div>
+    </div>
+  </div>
+</main>
+
+<script src="ragmath.js"></script>
+<script src="embedding.js"></script>
+</body>
+</html>

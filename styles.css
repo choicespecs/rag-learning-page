@@ -1,0 +1,504 @@
+/* ===========================================================
+   RAG Learning Page — "Terminal Lab" design system
+   All colors, spacing, and type live here as tokens.
+   No component file should ever use an inline hex value.
+   =========================================================== */
+
+:root {
+  /* Color */
+  --bg: #0d1117;
+  --surface: #161b22;
+  --border: #30363d;
+  --text-primary: #e6edf3;
+  --text-secondary: #8b949e;
+  --accent: #39d0d8;
+  --accent-dim: #1f6e72;
+  --success: #3fb950;
+  --error: #f85149;
+
+  /* Typography */
+  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
+  --fs-xs: 0.8rem;
+  --fs-sm: 0.9rem;
+  --fs-base: 1rem;
+  --fs-lg: 1.25rem;
+  --fs-xl: 1.75rem;
+  --fs-2xl: 2.25rem;
+  --fw-regular: 400;
+  --fw-bold: 600;
+
+  /* Spacing (4px base unit) */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 16px;
+  --space-4: 24px;
+  --space-5: 32px;
+  --space-6: 48px;
+
+  /* Shape */
+  --radius: 0px;
+  --border-width: 1px;
+
+  /* Motion */
+  --flash-duration: 400ms;
+  --transition-fast: 120ms ease-out;
+}
+
+/* ---------- Reset & base ---------- */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  color: var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  font-weight: var(--fw-regular);
+  line-height: 1.5;
+}
+
+h1, h2, h3 {
+  font-weight: var(--fw-bold);
+  margin: 0 0 var(--space-3) 0;
+}
+
+a {
+  color: var(--text-primary);
+  text-decoration: none;
+}
+
+button, select, input, textarea {
+  font-family: var(--font-mono);
+  font-size: var(--fs-base);
+  color: var(--text-primary);
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-2);
+}
+
+button {
+  cursor: pointer;
+  font-weight: var(--fw-bold);
+  transition: border-color var(--transition-fast);
+}
+
+button:hover,
+select:hover,
+input:hover,
+textarea:hover {
+  border-color: var(--accent);
+}
+
+button:focus-visible,
+select:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: var(--border-width) solid var(--accent);
+  outline-offset: 2px;
+}
+
+textarea {
+  width: 100%;
+  resize: vertical;
+  min-height: 4.5em;
+}
+
+label {
+  display: block;
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  margin-bottom: var(--space-1);
+}
+
+input[type="range"] {
+  width: 100%;
+  padding: 0;
+  accent-color: var(--accent);
+}
+
+/* ---------- Top nav ---------- */
+
+.site-nav {
+  display: flex;
+  align-items: center;
+  gap: var(--space-4);
+  padding: var(--space-3) var(--space-4);
+  border-bottom: var(--border-width) solid var(--border);
+}
+
+.site-nav .brand {
+  font-weight: var(--fw-bold);
+  color: var(--accent);
+  letter-spacing: 0.05em;
+}
+
+.site-nav .nav-links {
+  display: flex;
+  gap: var(--space-3);
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.site-nav .nav-links a {
+  color: var(--text-secondary);
+  padding: var(--space-1) var(--space-2);
+  border: var(--border-width) solid transparent;
+  transition: border-color var(--transition-fast), color var(--transition-fast);
+}
+
+.site-nav .nav-links a:hover {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.site-nav .nav-links a.active {
+  color: var(--accent);
+  border-color: var(--border);
+  font-weight: var(--fw-bold);
+}
+
+/* ---------- Page layout ---------- */
+
+.page-main {
+  padding: var(--space-4);
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.stage-layout {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.panel {
+  background: var(--surface);
+  border: var(--border-width) solid var(--border);
+  border-radius: var(--radius);
+  padding: var(--space-4);
+}
+
+.panel + .panel {
+  margin-top: var(--space-4);
+}
+
+.panel-title {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  padding-bottom: var(--space-2);
+}
+
+.control-row {
+  margin-bottom: var(--space-3);
+}
+
+.control-row .value-readout {
+  color: var(--accent);
+  font-weight: var(--fw-bold);
+}
+
+/* ---------- Explanation panel ---------- */
+
+.panel-title.collapsible {
+  all: unset;
+  box-sizing: border-box;
+  display: block;
+  width: 100%;
+  font-family: var(--font-mono);
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: var(--space-3);
+  border-bottom: var(--border-width) solid var(--border);
+  padding-bottom: var(--space-2);
+  cursor: pointer;
+}
+
+.panel-title.collapsible:hover {
+  color: var(--accent);
+  border-bottom-color: var(--accent);
+}
+
+.panel-title.collapsible:focus-visible {
+  outline: var(--border-width) solid var(--accent);
+  outline-offset: 2px;
+}
+
+.panel-title.collapsible .toggle-indicator {
+  color: var(--accent);
+  margin-right: var(--space-1);
+}
+
+.explanation-body.collapsed {
+  display: none;
+}
+
+.explanation-panel .explanation-general {
+  color: var(--text-primary);
+  font-size: var(--fs-sm);
+  margin-bottom: var(--space-3);
+}
+
+.explanation-panel .explanation-general p {
+  margin: 0 0 var(--space-3) 0;
+}
+
+.explanation-panel .explanation-general p:last-child {
+  margin-bottom: 0;
+}
+
+.explanation-panel .explanation-general h3 {
+  font-size: var(--fs-xs);
+  color: var(--text-secondary);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  margin: 0 0 var(--space-1) 0;
+}
+
+.explanation-panel .explanation-reactive {
+  color: var(--accent);
+  font-size: var(--fs-sm);
+  border-left: 2px solid var(--accent);
+  padding-left: var(--space-2);
+}
+
+.explanation-panel .explanation-reactive::before {
+  content: "> ";
+}
+
+/* ---------- Chunk blocks ---------- */
+
+.chunk-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+}
+
+.chunk-block {
+  border: var(--border-width) solid var(--border);
+  padding: var(--space-2) var(--space-3);
+  font-size: var(--fs-sm);
+  white-space: pre-wrap;
+  max-width: 260px;
+}
+
+.chunk-block .chunk-label {
+  display: block;
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+  margin-bottom: var(--space-1);
+}
+
+/* ---------- Token chips (preprocessing preview) ---------- */
+
+.token-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  margin: var(--space-3) 0;
+}
+
+.token-chip {
+  border: var(--border-width) solid var(--border);
+  padding: var(--space-1) var(--space-2);
+  font-size: var(--fs-sm);
+}
+
+.token-chip.kept {
+  border-color: var(--accent);
+  color: var(--text-primary);
+}
+
+.token-chip.removed {
+  color: var(--text-secondary);
+  text-decoration: line-through;
+  opacity: 0.7;
+}
+
+.summary-line {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+}
+
+.summary-line::before {
+  content: "> ";
+  color: var(--accent);
+}
+
+/* ---------- Flash animation (the only motion pattern) ---------- */
+
+@keyframes flash-bg {
+  0% { background-color: var(--accent-dim); }
+  100% { background-color: transparent; }
+}
+
+.flash {
+  animation: flash-bg var(--flash-duration) ease-out;
+}
+
+/* ---------- Vector / list displays ---------- */
+
+.entry-list {
+  list-style: none;
+  margin: 0 0 var(--space-3) 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.entry-list li {
+  border: var(--border-width) solid var(--border);
+  padding: var(--space-2);
+  font-size: var(--fs-sm);
+  display: flex;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.entry-list li .coords {
+  color: var(--text-secondary);
+  font-size: var(--fs-xs);
+}
+
+.entry-list li.selected {
+  border-color: var(--accent);
+}
+
+.entry-list li.rank-1 {
+  border-color: var(--accent);
+}
+
+.entry-list li .score {
+  color: var(--accent);
+  font-weight: var(--fw-bold);
+}
+
+canvas.plot {
+  display: block;
+  width: 100%;
+  max-width: 600px;
+  aspect-ratio: 600 / 320;
+  height: auto;
+  margin: var(--space-3) auto;
+  border: var(--border-width) solid var(--border);
+}
+
+/* ---------- Bar readout (toy vector dimensions, range -1..1) ---------- */
+
+.bar-row {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin-bottom: var(--space-2);
+  font-size: var(--fs-sm);
+}
+
+.bar-row .bar-dim {
+  width: 1.2em;
+  color: var(--text-secondary);
+}
+
+.bar-track {
+  position: relative;
+  flex: 1;
+  height: 10px;
+  border: var(--border-width) solid var(--border);
+  background: var(--bg);
+}
+
+.bar-track .bar-zero {
+  position: absolute;
+  top: -2px;
+  bottom: -2px;
+  left: 50%;
+  width: 1px;
+  background: var(--border);
+}
+
+.bar-track .bar-fill {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  background: var(--accent);
+}
+
+.bar-row .bar-value {
+  width: 4.5em;
+  text-align: right;
+  color: var(--accent);
+}
+
+/* ---------- Landing page pipeline diagram ---------- */
+
+.site-title {
+  font-size: var(--fs-2xl);
+}
+
+.pipeline {
+  display: flex;
+  gap: var(--space-3);
+  margin: var(--space-5) 0;
+  flex-wrap: wrap;
+}
+
+.pipeline-step {
+  flex: 1 1 200px;
+  border: var(--border-width) solid var(--border);
+  padding: var(--space-4);
+  transition: border-color var(--transition-fast);
+}
+
+.pipeline-step:hover {
+  border-color: var(--accent);
+}
+
+.pipeline-step .step-index {
+  color: var(--accent);
+  font-size: var(--fs-xs);
+}
+
+.pipeline-step h2 {
+  font-size: var(--fs-lg);
+  margin: var(--space-1) 0 var(--space-2) 0;
+}
+
+.pipeline-step p {
+  color: var(--text-secondary);
+  font-size: var(--fs-sm);
+  margin: 0;
+}
+
+.pipeline-arrow {
+  display: flex;
+  align-items: center;
+  color: var(--border);
+  font-size: var(--fs-lg);
+}
+
+@media (max-width: 860px) {
+  .pipeline {
+    flex-direction: column;
+  }
+  .pipeline-arrow {
+    justify-content: center;
+    transform: rotate(90deg);
+  }
+}

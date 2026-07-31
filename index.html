@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>RAG_LAB — Learn Retrieval-Augmented Generation</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+<link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+<nav class="site-nav">
+  <a class="brand" href="index.html">RAG_LAB</a>
+  <ul class="nav-links">
+    <li><a href="chunking.html">Chunking</a></li>
+    <li><a href="embedding.html">Embedding</a></li>
+    <li><a href="vectordb.html">Vector DB</a></li>
+    <li><a href="query.html">Query</a></li>
+  </ul>
+</nav>
+
+<main class="page-main">
+  <h1 class="site-title">RAG_LAB</h1>
+  <p>
+    Retrieval-Augmented Generation (RAG) answers questions by first
+    <strong>retrieving</strong> relevant text from a document collection, then
+    handing that text to a language model to <strong>generate</strong> a grounded
+    answer. This page walks through the four stages that make retrieval
+    possible — click any step below to interact with it directly and watch
+    the concept work in real time, with a toy (not real) implementation
+    small enough to see all the way through.
+  </p>
+
+  <div class="pipeline">
+    <a class="pipeline-step" href="chunking.html">
+      <span class="step-index">01</span>
+      <h2>Chunking</h2>
+      <p>Split raw text into smaller pieces before anything is embedded.</p>
+    </a>
+    <div class="pipeline-arrow">&rarr;</div>
+    <a class="pipeline-step" href="embedding.html">
+      <span class="step-index">02</span>
+      <h2>Embedding</h2>
+      <p>Turn a piece of text into a vector — a list of numbers a computer can compare.</p>
+    </a>
+    <div class="pipeline-arrow">&rarr;</div>
+    <a class="pipeline-step" href="vectordb.html">
+      <span class="step-index">03</span>
+      <h2>Vector DB</h2>
+      <p>Store many embedded chunks so the closest ones can be found later.</p>
+    </a>
+    <div class="pipeline-arrow">&rarr;</div>
+    <a class="pipeline-step" href="query.html">
+      <span class="step-index">04</span>
+      <h2>Querying</h2>
+      <p>Embed a question and rank stored chunks by similarity — this is retrieval.</p>
+    </a>
+  </div>
+
+  <p class="summary-line">
+    all four stages run entirely in your browser — no server, no real model, no data leaves this page
+  </p>
+</main>
+
+</body>
+</html>
