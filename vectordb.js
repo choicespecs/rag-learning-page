@@ -79,6 +79,14 @@ var els = {
 
 var ctx = els.canvas.getContext("2d");
 
+// Toy vectors can land outside [-1, 1] (see ragmath.js's toyEmbed), so
+// points sometimes fall off the fixed-margin canvas entirely. Pan/zoom
+// state lets the user drag the plot to find them instead of losing them
+// off-canvas with no way back.
+var view = { panX: 0, panY: 0, scale: 1 };
+var MIN_SCALE = 0.4;
+var MAX_SCALE = 4;
+
 function cssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
 }
@@ -88,8 +96,8 @@ function toCanvasXY(vector) {
   var h = els.canvas.height;
   var margin = 24;
   return {
-    x: w / 2 + vector.x * (w / 2 - margin),
-    y: h / 2 - vector.y * (h / 2 - margin),
+    x: w / 2 + view.panX + vector.x * (w / 2 - margin) * view.scale,
+    y: h / 2 + view.panY - vector.y * (h / 2 - margin) * view.scale,
   };
 }
 
@@ -206,18 +214,56 @@ function canvasCoordsFromEvent(evt) {
   };
 }
 
+var DEFAULT_HINT = "hover or click a point to inspect it — drag to pan, scroll to zoom";
+
+var drag = { active: false, moved: false, startX: 0, startY: 0, startPanX: 0, startPanY: 0 };
+var DRAG_THRESHOLD = 4; // px of movement before a mousedown counts as a drag, not a click
+
+els.canvas.addEventListener("mousedown", function (evt) {
+  drag.active = true;
+  drag.moved = false;
+  drag.startX = evt.clientX;
+  drag.startY = evt.clientY;
+  drag.startPanX = view.panX;
+  drag.startPanY = view.panY;
+  els.canvas.style.cursor = "grabbing";
+});
+
+window.addEventListener("mousemove", function (evt) {
+  if (!drag.active) return;
+  var dx = evt.clientX - drag.startX;
+  var dy = evt.clientY - drag.startY;
+  if (!drag.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+  drag.moved = true;
+
+  var rect = els.canvas.getBoundingClientRect();
+  var scaleX = els.canvas.width / rect.width;
+  var scaleY = els.canvas.height / rect.height;
+  view.panX = drag.startPanX + dx * scaleX;
+  view.panY = drag.startPanY + dy * scaleY;
+  drawPlot();
+});
+
+window.addEventListener("mouseup", function () {
+  if (!drag.active) return;
+  drag.active = false;
+  els.canvas.style.cursor = "grab";
+});
+
 els.canvas.addEventListener("mousemove", function (evt) {
+  if (drag.active) return;
   var pos = canvasCoordsFromEvent(evt);
   var hit = findNearestEntry(pos.x, pos.y);
-  els.canvas.style.cursor = hit ? "pointer" : "default";
+  els.canvas.style.cursor = hit ? "pointer" : "grab";
   if (hit) {
     els.plotHint.textContent = hit.label + " · (" + hit.vector.x.toFixed(2) + ", " + hit.vector.y.toFixed(2) + ")";
   } else {
-    els.plotHint.textContent = "hover or click a point to inspect it";
+    els.plotHint.textContent = DEFAULT_HINT;
   }
 });
 
 els.canvas.addEventListener("click", function (evt) {
+  if (drag.moved) return; // suppress the click that follows a drag
   var pos = canvasCoordsFromEvent(evt);
   var hit = findNearestEntry(pos.x, pos.y);
   if (hit) {
@@ -226,6 +272,30 @@ els.canvas.addEventListener("click", function (evt) {
     drawPlot();
   }
 });
+
+els.canvas.addEventListener("dblclick", function () {
+  view.panX = 0;
+  view.panY = 0;
+  view.scale = 1;
+  drawPlot();
+  els.plotHint.textContent = "view reset";
+});
+
+els.canvas.addEventListener("wheel", function (evt) {
+  evt.preventDefault();
+  var factor = evt.deltaY < 0 ? 1.1 : 1 / 1.1;
+  var newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, view.scale * factor));
+
+  // zoom around the cursor position so the point under it stays put
+  var pos = canvasCoordsFromEvent(evt);
+  var w = els.canvas.width;
+  var h = els.canvas.height;
+  var ratio = newScale / view.scale;
+  view.panX = pos.x - ratio * (pos.x - view.panX - w / 2) - w / 2;
+  view.panY = pos.y - ratio * (pos.y - view.panY - h / 2) - h / 2;
+  view.scale = newScale;
+  drawPlot();
+}, { passive: false });
 
 function addEntry() {
   var text = els.addInput.value.trim();

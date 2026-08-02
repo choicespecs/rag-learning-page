@@ -399,6 +399,7 @@ canvas.plot {
   height: auto;
   margin: var(--space-3) auto;
   border: var(--border-width) solid var(--border);
+  cursor: grab;
 }
 
 /* ---------- Bar readout (toy vector dimensions, range -1..1) ---------- */

@@ -79,12 +79,21 @@ var store = STORE_TEXTS.map(function (text, i) {
 var els = {
   input: document.getElementById("query-input"),
   canvas: document.getElementById("plot"),
+  plotHint: document.getElementById("plot-hint"),
   resultsList: document.getElementById("results-list"),
   explanationGeneral: document.getElementById("explanation-general"),
   explanationReactive: document.getElementById("explanation-reactive"),
 };
 
 var ctx = els.canvas.getContext("2d");
+
+// Toy vectors can land outside [-1, 1] (see ragmath.js's toyEmbed), so
+// points sometimes fall off the fixed-margin canvas entirely. Pan/zoom
+// state lets the user drag the plot to find them instead of losing them
+// off-canvas with no way back.
+var view = { panX: 0, panY: 0, scale: 1 };
+var MIN_SCALE = 0.4;
+var MAX_SCALE = 4;
 
 function cssVar(name) {
   return getComputedStyle(document.documentElement).getPropertyValue(name).trim();
@@ -95,8 +104,8 @@ function toCanvasXY(vector) {
   var h = els.canvas.height;
   var margin = 24;
   return {
-    x: w / 2 + vector.x * (w / 2 - margin),
-    y: h / 2 - vector.y * (h / 2 - margin),
+    x: w / 2 + view.panX + vector.x * (w / 2 - margin) * view.scale,
+    y: h / 2 + view.panY - vector.y * (h / 2 - margin) * view.scale,
   };
 }
 
@@ -199,17 +208,93 @@ function setParagraphs(container, items) {
   });
 }
 
+var lastQueryVector = null;
+var lastResults = [];
+
 function render(reactiveMessage, flash) {
   var text = els.input.value;
   var queryVector = toyEmbed(text);
 
   var results = queryVector ? rankBySimilarity(queryVector, store) : [];
+  lastQueryVector = queryVector;
+  lastResults = results;
   drawPlot(queryVector, results);
   renderResults(results, flash);
 
   setParagraphs(els.explanationGeneral, EXPLANATION_PARAGRAPHS);
   els.explanationReactive.textContent = reactiveMessage || "";
 }
+
+function canvasCoordsFromEvent(evt) {
+  var rect = els.canvas.getBoundingClientRect();
+  var scaleX = els.canvas.width / rect.width;
+  var scaleY = els.canvas.height / rect.height;
+  return {
+    x: (evt.clientX - rect.left) * scaleX,
+    y: (evt.clientY - rect.top) * scaleY,
+  };
+}
+
+var DEFAULT_HINT = "drag to pan, scroll to zoom";
+
+var drag = { active: false, moved: false, startX: 0, startY: 0, startPanX: 0, startPanY: 0 };
+var DRAG_THRESHOLD = 4; // px of movement before a mousedown counts as a drag
+
+els.canvas.addEventListener("mousedown", function (evt) {
+  drag.active = true;
+  drag.moved = false;
+  drag.startX = evt.clientX;
+  drag.startY = evt.clientY;
+  drag.startPanX = view.panX;
+  drag.startPanY = view.panY;
+  els.canvas.style.cursor = "grabbing";
+});
+
+window.addEventListener("mousemove", function (evt) {
+  if (!drag.active) return;
+  var dx = evt.clientX - drag.startX;
+  var dy = evt.clientY - drag.startY;
+  if (!drag.moved && Math.hypot(dx, dy) < DRAG_THRESHOLD) return;
+  drag.moved = true;
+
+  var rect = els.canvas.getBoundingClientRect();
+  var scaleX = els.canvas.width / rect.width;
+  var scaleY = els.canvas.height / rect.height;
+  view.panX = drag.startPanX + dx * scaleX;
+  view.panY = drag.startPanY + dy * scaleY;
+  drawPlot(lastQueryVector, lastResults);
+});
+
+window.addEventListener("mouseup", function () {
+  if (!drag.active) return;
+  drag.active = false;
+  els.canvas.style.cursor = "grab";
+});
+
+els.canvas.addEventListener("dblclick", function () {
+  view.panX = 0;
+  view.panY = 0;
+  view.scale = 1;
+  drawPlot(lastQueryVector, lastResults);
+  els.plotHint.textContent = "view reset";
+});
+
+els.canvas.addEventListener("wheel", function (evt) {
+  evt.preventDefault();
+  var factor = evt.deltaY < 0 ? 1.1 : 1 / 1.1;
+  var newScale = Math.min(MAX_SCALE, Math.max(MIN_SCALE, view.scale * factor));
+
+  // zoom around the cursor position so the point under it stays put
+  var pos = canvasCoordsFromEvent(evt);
+  var w = els.canvas.width;
+  var h = els.canvas.height;
+  var ratio = newScale / view.scale;
+  view.panX = pos.x - ratio * (pos.x - view.panX - w / 2) - w / 2;
+  view.panY = pos.y - ratio * (pos.y - view.panY - h / 2) - h / 2;
+  view.scale = newScale;
+  drawPlot(lastQueryVector, lastResults);
+  els.plotHint.textContent = DEFAULT_HINT;
+}, { passive: false });
 
 els.input.addEventListener("input", function () {
   var text = els.input.value;
